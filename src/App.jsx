@@ -25,10 +25,10 @@ const CONTACT = {
   name: "Charlie Dolphin",
   role: "Software Engineering Student @ Iowa State (May 2026)",
   location: "Ames, IA",
-  email: "charlie@example.com", // ← replace
+  email: "charlie.dolphin9@example.com",
   github: "https://github.com/jesuisdolfin",
   linkedin: "https://www.linkedin.com/in/charliedolphin/",
-  resumeUrl: "/resume.pdf", // place a file named resume.pdf in the public folder
+  resumeUrl: "../public/resume.pdf",
 };
 
 const PROJECTS = [
