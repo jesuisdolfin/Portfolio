@@ -1,16 +1,17 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Mail, Link as LinkIcon, ArrowUpRight, Download, Laptop, Smartphone, Wrench, Moon, Sun } from "lucide-react";
+import React, { useMemo, useState } from "react";
+import { Github, Mail, Link as LinkIcon, ArrowUpRight, Download, Laptop, Smartphone, Wrench } from "lucide-react";
 
 const CONTACT = {
   name: "Charlie Dolphin",
-  role: "Software Engineering Student @ Iowa State (May 2026)",
+  role: "Software Engineering @ Iowa State (May 2026)",
   location: "Ames, IA",
   email: "charlie.dolphin9@example.com",
   github: "https://github.com/jesuisdolfin",
   linkedin: "https://www.linkedin.com/in/charliedolphin/",
-
 };
-const RESUME_PATH = "/resume.pdf";
+
+const BASE_URL = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL) || "/";
+const RESUME_PATH = `${BASE_URL}resume.pdf`;
 
 const PROJECTS = [
   {
@@ -29,7 +30,7 @@ const PROJECTS = [
     summary:
       "Mobile app with barcode scan (expo-camera), Open Food Facts lookup, Zustand state + AsyncStorage, qty auto‑increment, dark theme, polished UX.",
     tags: ["React Native", "Expo", "Zustand", "Mobile"],
-    links: { github: "https://github.com/jesuisdolfin/ePantry" },
+    links: { github: "https://github.com/jesuisdolfin/pantry-app" },
     icon: <Smartphone className="h-5 w-5" />,
   },
   {
@@ -53,96 +54,21 @@ function clsx(...args) {
   return args.filter(Boolean).join(" ");
 }
 
-// Dark mode
-function useDarkMode() {
-  const getPreferred = () => {
-    const stored = typeof window !== "undefined" ? localStorage.getItem("theme") : null;
-    if (stored === "dark") return true;
-    if (stored === "light") return false;
-    // No explicit choice — use system preference
-    if (typeof window !== "undefined") {
-      return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    }
-    return false;
-  };
-
-  const [isDark, setIsDark] = useState(getPreferred);
-  const [userSet, setUserSet] = useState(() => {
-    const stored = typeof window !== "undefined" ? localStorage.getItem("theme") : null;
-    return stored === "dark" || stored === "light"; // whether user explicitly chose
-  });
-
-  useEffect(() => {
-    const root = document.documentElement;
-    root.classList.toggle("dark", isDark);
-  }, [isDark]);
-
-  // Persist to localStorage on explicit user toggles
-  const toggle = () => {
-    setIsDark((prev) => {
-      const next = !prev;
-      localStorage.setItem("theme", next ? "dark" : "light");
-      if (!userSet) setUserSet(true);
-      return next;
-    });
-  };
-
-  // React to system changes only if user hasn't explicitly chosen
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const onChange = (e) => {
-      if (!userSet) {
-        setIsDark(e.matches);
-      }
-    };
-    mq.addEventListener ? mq.addEventListener("change", onChange) : mq.addListener(onChange);
-    return () => {
-      mq.removeEventListener ? mq.removeEventListener("change", onChange) : mq.removeListener(onChange);
-    };
-  }, [userSet]);
-
-  return { isDark, toggle };
-}
-
 function Shell({ children }) {
   return (
-    <div className="min-h-screen bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
+    <div className="min-h-screen bg-[#0f0f0f] text-[#f5f5f5]">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10">{children}</div>
-      <footer className="py-8 text-center text-sm text-zinc-500">
+      <footer className="py-8 text-center text-sm text-[#a1a1aa]">
         © {new Date().getFullYear()} {CONTACT.name}
       </footer>
     </div>
   );
 }
 
-function Nav({ isDark, onToggleTheme }) {
+function Nav() {
   return (
     <div className="flex items-center justify-between">
-      <div className="font-semibold tracking-tight">{CONTACT.name}</div>
-      <div className="flex items-center gap-3">
-        <a
-          href={CONTACT.github}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="inline-flex items-center gap-1 text-sm hover:underline"
-        >
-          <Github className="h-4 w-4" /> GitHub
-        </a>
-        <a
-          href={`mailto:${CONTACT.email}`}
-          className="inline-flex items-center gap-1 text-sm hover:underline"
-        >
-          <Mail className="h-4 w-4" /> Email
-        </a>
-        <button
-          type="button"
-          onClick={onToggleTheme}
-          className="rounded-2xl border border-zinc-300 dark:border-zinc-700 px-3 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900"
-          aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-        >
-          {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-        </button>
-      </div>
+      <div className="font-semibold tracking-tight text-6xl">{CONTACT.name}</div>
     </div>
   );
 }
@@ -151,12 +77,12 @@ function Hero() {
   return (
     <section className="mt-10">
       <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">{CONTACT.role}</h1>
-      <p className="mt-3 max-w-2xl text-zinc-600 dark:text-zinc-400">
+      <p className="mt-3 max-w-2xl text-[#a1a1aa]">
         I build pragmatic, production‑ready apps across web, mobile, and cloud. I love clean architecture, fast feedback loops, and delightful UX.
       </p>
       <div className="mt-6 flex flex-wrap gap-3">
         <a href={RESUME_PATH} className="inline-flex items-center gap-2">
-          <button className="rounded-2xl bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-900 px-4 py-2 text-sm font-medium">
+          <button className="rounded-2xl bg-[#9333ea] text-white px-4 py-2 text-sm font-medium hover:bg-[#7e22ce]">
             <Download className="h-4 w-4" /> Resume
           </button>
         </a>
@@ -166,12 +92,12 @@ function Hero() {
           rel="noreferrer noopener"
           className="inline-flex items-center gap-2"
         >
-          <button className="rounded-2xl bg-zinc-100 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100 px-4 py-2 text-sm font-medium">
+          <button className="rounded-2xl border border-[#9333ea] text-[#9333ea] px-4 py-2 text-sm font-medium hover:bg-[#7e22ce] hover:text-white">
             <Github className="h-4 w-4" /> GitHub
           </button>
         </a>
         <a href={`mailto:${CONTACT.email}`} className="inline-flex items-center gap-2">
-          <button className="rounded-2xl border border-zinc-300 dark:border-zinc-700 px-4 py-2 text-sm font-medium">
+          <button className="rounded-2xl border border-[#3f3f46] text-white px-4 py-2 text-sm font-medium hover:bg-[#151515]">
             <Mail className="h-4 w-4" /> Contact
           </button>
         </a>
@@ -204,8 +130,8 @@ function Projects() {
               className={clsx(
                 "rounded-2xl px-3 py-1.5 text-sm border",
                 t === activeTag
-                  ? "bg-zinc-900 text-zinc-50 border-zinc-900 dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-100"
-                  : "border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-900"
+                  ? "bg-[#9333ea] text-white border-[#9333ea]"
+                  : "border-[#3f3f46] text-[#f5f5f5] hover:bg-[#151515]"
               )}
             >
               {t}
@@ -216,28 +142,28 @@ function Projects() {
 
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {filtered.map((p) => (
-          <div key={p.title} className="rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
-            <div className="flex items-center gap-2 text-zinc-500 mb-2">
+          <div key={p.title} className="rounded-2xl border border-[#27272a] p-5 bg-[#111111]">
+            <div className="flex items-center gap-2 text-[#a1a1aa] mb-2">
               {p.icon}
               <span className="sr-only">icon</span>
             </div>
             <h3 className="text-lg font-semibold leading-tight">{p.title}</h3>
-            <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">{p.summary}</p>
+            <p className="mt-2 text-sm text-[#a1a1aa]">{p.summary}</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {p.tags.map((tag) => (
-                <span key={tag} className="rounded-xl bg-zinc-100 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100 px-2 py-0.5 text-xs">
+                <span key={tag} className="rounded-xl bg-[#9333ea]/20 text-[#c084fc] px-2 py-0.5 text-xs">
                   {tag}
                 </span>
               ))}
             </div>
             <div className="mt-4 flex items-center gap-3">
               {p.links?.github && (
-                <a href={p.links.github} target="_blank" rel="noreferrer noopener" className="inline-flex items-center gap-1 text-sm hover:underline">
+                <a href={p.links.github} target="_blank" rel="noreferrer noopener" className="inline-flex items-center gap-1 text-sm hover:underline text-[#c084fc] hover:text-white">
                   <Github className="h-4 w-4" /> Code <ArrowUpRight className="h-3 w-3" />
                 </a>
               )}
               {p.links?.demo && (
-                <a href={p.links.demo} target="_blank" rel="noreferrer noopener" className="inline-flex items-center gap-1 text-sm hover:underline">
+                <a href={p.links.demo} target="_blank" rel="noreferrer noopener" className="inline-flex items-center gap-1 text-sm hover:underline text-[#c084fc] hover:text-white">
                   <LinkIcon className="h-4 w-4" /> Demo <ArrowUpRight className="h-3 w-3" />
                 </a>
               )}
@@ -255,9 +181,9 @@ function Skills() {
       <h2 className="text-2xl font-semibold">Skills</h2>
       <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {SKILLS.map((group) => (
-          <div key={group.group} className="rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5">
+          <div key={group.group} className="rounded-2xl border border-[#27272a] p-5 bg-[#111111]">
             <div className="font-medium mb-2">{group.group}</div>
-            <ul className="text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
+            <ul className="text-sm text-[#a1a1aa] space-y-1">
               {group.items.map((item) => (
                 <li key={item}>• {item}</li>
               ))}
@@ -275,17 +201,17 @@ function Contact() {
       <h2 className="text-2xl font-semibold">Get in touch</h2>
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <a href={`mailto:${CONTACT.email}`}>
-          <button className="rounded-2xl bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-900 px-4 py-2 text-sm font-medium">
+          <button className="rounded-2xl bg-[#9333ea] text-white px-4 py-2 text-sm font-medium hover:bg-[#7e22ce]">
             <Mail className="h-4 w-4" /> Email me
           </button>
         </a>
         <a href={CONTACT.github} target="_blank" rel="noreferrer noopener">
-          <button className="rounded-2xl bg-zinc-100 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100 px-4 py-2 text-sm font-medium">
+          <button className="rounded-2xl border border-[#9333ea] text-[#9333ea] px-4 py-2 text-sm font-medium hover:bg-[#7e22ce] hover:text-white">
             <Github className="h-4 w-4" /> GitHub
           </button>
         </a>
         <a href={CONTACT.linkedin} target="_blank" rel="noreferrer noopener">
-          <button className="rounded-2xl border border-zinc-300 dark:border-zinc-700 px-4 py-2 text-sm font-medium">
+          <button className="rounded-2xl border border-[#3f3f46] text-white px-4 py-2 text-sm font-medium hover:bg-[#151515]">
             LinkedIn
           </button>
         </a>
@@ -295,10 +221,9 @@ function Contact() {
 }
 
 export default function Portfolio() {
-  const { isDark, toggle } = useDarkMode();
   return (
     <Shell>
-      <Nav isDark={isDark} onToggleTheme={toggle} />
+      <Nav />
       <Hero />
       <Projects />
       <Skills />
